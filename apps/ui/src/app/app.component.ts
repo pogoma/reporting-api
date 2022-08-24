@@ -1,13 +1,38 @@
-import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Message } from '@reporting-api/api-interfaces';
+import {Component} from '@angular/core';
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'reporting-api-root',
-  templateUrl: './app.component.html',
+  template: `
+    <div class="content">
+      <div class="modes">
+        tu będa przełączniki
+      </div>
+      <div class="iframe-container">
+        <iframe [src]="iframeSrc"></iframe>
+      </div>
+      <div class="console-container">
+        <div class="console-label">
+          Requesty do servera:
+        </div>
+        <div class="console">
+
+        </div>
+      </div>
+
+    </div>
+
+  `,
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  hello$ = this.http.get<Message>('/api/hello');
-  constructor(private http: HttpClient) {}
+
+  _iframeSrc = 'api/csp-script-src.html'
+
+  constructor(private sanitizer: DomSanitizer) {
+  }
+
+  get iframeSrc() {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(this._iframeSrc);
+  }
 }
